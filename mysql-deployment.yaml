@@ -1,77 +1,29 @@
-apiVersion: v1
-kind: Service
-metadata:
-  name: wordpress-mysql
-  namespace: wordpress
-  labels:
-    app: wordpress
-spec:
-  ports:
-    - port: 3306
-  selector:
-    app: wordpress
-    tier: mysql
-  clusterIP: None
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: mysql-pv-claim
-  namespace: wordpress
-  labels:
-    app: wordpress
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 20Gi
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: wordpress-mysql
-  namespace: wordpress
-  labels:
-    app: wordpress
+  name: mysql-deployment
+  namespace: mysql  
 spec:
+  replicas: 2 
   selector:
     matchLabels:
-      app: wordpress
-      tier: mysql
-  strategy:
-    type: Recreate
+      app: mysql
   template:
     metadata:
       labels:
-        app: wordpress
-        tier: mysql
+        app: mysql
     spec:
       containers:
-      - image: mysql:8.0
-        name: mysql
+      - name: mysql
+        image: mysql:latest  
         env:
         - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mysql-pass
-              key: password
+          value: 123qwe
         - name: MYSQL_DATABASE
-          value: wordpress
+          value: mysqldb
         - name: MYSQL_USER
-          value: wordpress
+          value: mysqldb
         - name: MYSQL_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mysql-pass
-              key: password
+          value: 123qwe  
         ports:
-        - containerPort: 3306
-          name: mysql
-        volumeMounts:
-        - name: mysql-persistent-storage
-          mountPath: /var/lib/mysql
-      volumes:
-      - name: mysql-persistent-storage
-        persistentVolumeClaim:
-          claimName: mysql-pv-claim
+        - containerPort: 3306  
