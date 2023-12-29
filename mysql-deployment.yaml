@@ -1,8 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
-metadata: mysql
+metadata:
+  name: mysql-deployment
+  namespace: mysql
 spec:
-  replicas: 2 
+  replicas: 2
   selector:
     matchLabels:
       app: mysql
@@ -16,12 +18,12 @@ spec:
         image: mysql:5.7
         env:
         - name: MYSQL_ROOT_PASSWORD
-          value: 123qwe
+          value: your-root-password
         - name: MYSQL_DATABASE
-          value: mysqldb
+          value: your-database-name
         - name: MYSQL_USER
-          value: mysqldb
+          value: your-mysql-user
         - name: MYSQL_PASSWORD
-          value: 123qwe  
+          value: your-mysql-password
         ports:
-        - containerPort: 3306  
+        - containerPort: 3306
